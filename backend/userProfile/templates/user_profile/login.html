@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+
+
+{% block main_content %} 
+
+<main class="w-4/5 my-5 mx-auto">
+    <h2 clas=" text-2xl ">Welcome! to Login Page!!</h2>
+   <form class="" method="POST">
+    {%csrf_token %}
+    {{form.as_p}}
+    <button class="bg-indigo-500 w-2/5  text-white py-2 my-1 mx-auto" type="submit"> Login </button>
+   </form>
+</main>
+
+{% endblock %}

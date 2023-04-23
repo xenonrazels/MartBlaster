@@ -1,0 +1,12 @@
+django
+djangorestframework
+numpy
+pandas
+tensorflow
+pillow
+scikit-learn
+django-multiselectfield2
+
+
+
+

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+
+
+{% block main_content %} 
+
+<main class="w-4/5 my-5 mx-auto">
+   <form class="" method="POST">
+    {%csrf_token %}
+    {{form.as_p}}
+    <button class="bg-indigo-500 w-2/5  text-white py-2 my-1 mx-auto" type="submit"> Register </button>
+   </form>
+</main>
+
+{% endblock %}
