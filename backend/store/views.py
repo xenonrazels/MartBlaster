@@ -8,21 +8,18 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
-from keras.applications.mobilenet import preprocess_input, decode_predictions
-# from tensorflow.keras.applications import vgg16
-from keras.applications import MobileNetV3Large
+from keras.applications.mobilenet_v2 import MobileNetV2, preprocess_input, decode_predictions
 from .cart import Cart 
 
 # Load the VGG16 model and remove the last layer
 # vgg_model = vgg16.VGG16(weights='imagenet', include_top=False)
 # Create your views here.
-model = MobileNetV3Large(weights='imagenet')
+model = MobileNetV2(weights='imagenet')
 def index(request):
     products=Product.objects.filter(status=Product.ACTIVE)
     context={
         'products':products
     }
-
     return render(request, 'front_page.html',context)
 
 def product_detail(request,id):
@@ -35,7 +32,6 @@ def product_detail(request,id):
 
 def department_categories(request):
     categories=Category.objects.all()
-
     context={
         'categories':categories
     }
@@ -58,28 +54,28 @@ def search_product(request):
     if request.method=='POST':
         query = [request.POST.get('query', '')]
         image=request.FILES.get('image','')
-   
         products = Product.objects.all()
-        
         if image :
-            print("hello image")
+            print("hello recived")
             # Load the image from the request
             img_bytes=BytesIO(image.read())
             img = load_img(img_bytes, target_size=(224, 224))
+            print(" kernal (224 )")
             x = img_to_array(img)
             x = np.expand_dims(x, axis=0)
             x = preprocess_input(x)
-           
-           
             preds = model.predict(x)
-            pred= decode_predictions(preds, top=3)[0]
-            print(pred)
-            found_object=[p[1] for p in pred]
-            print(found_object)
-            
-        
+            pred= decode_predictions(preds, top=3)
+           
+            if pred:
+                for pred_list in pred:
+                    for label, desc, prob in pred_list:
+                       
+                        query.append(desc)
+                query=str(query)
+          
     # Build a corpus of product titles
-        corpus = [p.title   +" "+ p.description + " "+p.category.title for p in products]
+        corpus = [p.title   +" "+ p.description  + " "+p.category.title for p in products]
 
     # Create a TF-IDF vectorizer
         vectorizer = TfidfVectorizer()
@@ -88,11 +84,10 @@ def search_product(request):
         tfidf_matrix = vectorizer.fit_transform(corpus)
 
     # Compute the TF-IDF matrix for the query
-        query_tfidf = vectorizer.transform(query)
+        query_tfidf = vectorizer.transform([query])
 
     # Compute the cosine similarities between the query and the product titles
         similarities = cosine_similarity(query_tfidf, tfidf_matrix)
-
         # Sort the products by their similarity to the query
         sorted_indices = similarities.argsort()[0][::-1].tolist()
         sorted_products = [products[i] for i in sorted_indices]
@@ -101,11 +96,9 @@ def search_product(request):
             'products': sorted_products
         }
         return render(request, 'store/search.html', context)
-
     else:
         # If the request method is not POST or an image was not uploaded, display the search form
         return render(request, 'front_page.html')
-
 
 
 def cart(request):
