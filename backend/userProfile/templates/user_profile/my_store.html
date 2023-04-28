@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block main_content %} 
+<main class=" w-4/5 mx-auto bg-gray-100 px-5 py-5">
+    <h2 class="text-2xl my-3  font-medium inline-flex items-center"><span class="iconify" data-icon="mdi-store"></span>My Store</h2>
+    <h3>Welcome! to your Store, <span class="font-medium">{% firstof request.user.get_full_name request.user.username %} </span></h3>
+    <div class="add_product">
+    
+        <a href="{%url 'userProfile:add_product'%}"><button class="inline-flex items-center bg-indigo-800 text-white font-medium px-3 py-2 rounded hover:bg-indigo-400"><span class="iconify" data-icon="mdi-plus"></span>Add Product</button></a>
+    </div>
+    <!-- django messages  -->
+    {% if messages %}
+    
+    <div class="message px-2 py-1 m-2">
+        {% for message in messages%}
+        <p class="px-2 py-1 bg-teal-800 text-white">{{message}}</p>
+        {% endfor %}
+    </div>
+    {% endif%}
+
+   <div class="my-store-products">
+    <h2 class="text-xl border-b border-orange-300 my-2 inline-block">Listed Products</h2>
+        <div class="flex flex-wrap m-4">
+            {% for product in products %} 
+
+          <div class="lg:w-1/4 md:w-1/2 p-4 w-full hover:shadow-xl bg-white mb-1 m-2">
+            <a href="{% url 'userProfile:edit_product' product.id %}" class="block relative h-48 rounded overflow-hidden">
+                {% if product.image %}
+                <div class="image mb-2">
+                    <img src="{{ product.image.url }}" alt="Image of {{ product.title }}">
+                </div>
+            {% endif %}
+            
+            <div class="mt-4">
+              <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">{{product.category}}</h3>
+
+              <h2 class="text-gray-900 title-font text-lg font-medium">{{product.title}}</h2>
+              <div class="flex items-center justify-between"><p class="mt-1 flex gap-2">{{product.price}}</p><a href="{% url 'userProfile:vendor_detail' product.added_by.id%}"> <p class="">{% firstof product.added_by.get_full_name  product.added_by.username%}</p></a>
+              <h4 class="text-gray-500 text-xs tracking-widest title-font mb-1"><strong>Status :</strong>{{product.get_status_display}}</h4>
+            </div>
+            </div>
+        </a>
+           
+          
+          </div>
+          {%endfor%}
+         
+        </div>
+   </div>
+</main>
+{% endblock %}

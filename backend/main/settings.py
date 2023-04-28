@@ -39,11 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+   
     'store',
-    'userProfile'
+    'userProfile',
+    'widget_tweaks',
     
 ]
-TAILWIND_APP_NAME = 'theme'
+
+CART_SESSION_ID = 'cart'
+SESSION_COOKIE_AGE = 86400
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -53,11 +58,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
-NPM_BIN_PATH = '/usr/local/bin/npm'
-NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+
 
 ROOT_URLCONF = 'main.urls'
 
@@ -72,6 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'store.cart_context_preprocessor.cart',
             ],
         },
     },

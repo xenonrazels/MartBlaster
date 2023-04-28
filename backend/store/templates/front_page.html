@@ -2,7 +2,7 @@
 {% load department_categories %}
 {% load static %}
 {% block main_content %}
-<main class="w-11/12 mx-auto">
+<main class="w-11/12 mx-auto bg-gray-100">
     <section>
       <!-- Department Navigation Section -->
       <nav class=" Department_category_nav flex w-1/4 px-3 py-1 rounded flex-col bg-orange-200">
@@ -17,30 +17,15 @@
     </section>
 
     <!-- Product Section -->
-    <section class="text-gray-600 body-font">
-      <div class="container px-5 py-24 mx-auto">
-        <h2 class="text-2xl border-b border-orange-300 my-2 inline-block">Top Product Of the day</h2>
-        <div class="flex flex-wrap -m-4">
-            {% for product in products %} 
-
-          <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
-            <a href="{% url 'store:Product_detail' product.id %}" class="block relative h-48 rounded overflow-hidden">
-              <img alt="ecommerce" class="object-cover object-center w-full h-full block" src="{{product.image.url}}">
-            </a>
-            <a href="{% url 'store:Product_detail' product.id %}">
-            <div class="mt-4">
-              <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">{{product.category}}</h3>
-              <h2 class="text-gray-900 title-font text-lg font-medium">{{product.title}}</h2>
-              <div class=""><p class="mt-1 flex gap-2">$16.00</p><a href="{% url 'userProfile:vendor_detail' product.added_by.id%}"> <p class="">{% firstof product.added_by.get_full_name  product.added_by.username%}</p></a></div>
-            </div>
-          </a>
-          
-          </div>
-          {%endfor%}
-         
+    <section class="text-gray-600 body-font ">
+      <div class="container px-5 py-2 mx-auto shadow-lg bg-white my-2">
+        <h2 class="text-2xl  my-2 py-3"><span class="border-b border-orange-700 inline-block px-3 py-1"> Top Selling Products</span></h2>
+        <div class="flex flex-wrap bg-gray-100 -m-4">
+           
+          {%include 'includes/partial_Product.html' %}
         </div>
       </div>
     </section>
     <!-- Product section End ------------------- -->
     {% endblock %} 
-    hello thi si sforntend page
+  
