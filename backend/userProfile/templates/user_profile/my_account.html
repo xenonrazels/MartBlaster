@@ -1,8 +1,52 @@
 {% extends 'base.html' %}
 
 {% block main_content %} 
+
 <main class=" w-4/5 mx-auto">
-    <h2 class="text-2xl my-3">My Account</h2>
+    <h2 class="text-2xl my-3">My Account</h2>   
+  <section class="relative">
+    {% if messages %}
+    <div id="messages" class="absolute bottom-0 right-0 z-50">
+        {% for message in messages %}
+          <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+            <strong class="font-bold">{{ message.tags }}</strong>
+            <span class="block sm:inline">{{ message }}</span>
+            <button type="button" class="absolute px-2 py-2 top-0 right-0 mt-4 mr-4 text-lg font-semibold hover:text-gray-800" data-dismiss="alert">
+              <span>&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      </div>
+
+  {% endif %}
+  {% if orders %}
+
+  <h2 class="text-xl my-2 font-medium">Order Placed </h2>
+<p class="text-xl">Your Ordered Products </p>
+  <div class="flex flex-wrap -m-4  text-gray-700">
+      {% for order in orders %} 
+  
+    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+      <a href="{% url 'store:Product_detail' order.product.id %}" class="block relative h-48 rounded overflow-hidden">
+        <img alt="ecommerce" class="object-cover object-center w-full h-full block" src="{{order.product.image.url}}">
+      </a>
+      <a href="{% url 'store:Product_detail' order.product.id %}">
+      <div class="mt-1 my-2">
+        <h3 class=" text-xs tracking-widest mb-1">{{order.order.created_by}}</h3>
+        <p class=" title-font text-lg font-medium">{{order.product.title}}</p>
+        <p class=" title-font text-lg font-medium"><strong>At Price:</strong>{{order.price}}</p>
+        <p class="mt-1"><strong>{{order.order.created_at}}:</strong>{{order.order.status}}</p>
+        <p class=" title-font text-lg font-medium"><strong>Quantity:</strong>{{order.quantity}}</p>
+
+      </div>
+    </a>
+    
+    </div>
+    {%endfor%}
+   
+  </div>
+  {% endif %}
+  </section>
    <a class="bg-orange-800 px-3 py-2 text-white" href="{% url 'userProfile:logout'%}" >Logout</a>
 </main>
 {% endblock %}

@@ -3,29 +3,65 @@
 {% load static %}
 {% block main_content %}
 <main class="w-11/12 mx-auto bg-gray-100">
-    <section>
-      <!-- Department Navigation Section -->
-      <nav class=" Department_category_nav flex w-1/4 px-3 py-1 rounded flex-col bg-orange-200">
-        <h3 class="text-xl bg-orange-300 w-full text-center">Department Categories >></h3>
-        {% department_categories_nav %}
-        
-         <div  class="view-all border bg-white text-end px-1 hover:underline decoration-sky-500 flex justify-center items-center ">View all 
-          <span class="iconify" data-icon="mdi-arrow-down-drop-circle"></span>
-         </button> 
-      </nav>
-          <!-- Department Navigation Section -->
-    </section>
+  <!-- head section starts here -->
+<div class="flex head_section">
+  <section class="w-1/4 px-4 py-6 bg-gray-100">
+    <!-- Department Navigation Section -->
+    <nav class="Department_category_nav flex flex-col rounded bg-orange-200 px-3 py-1">
+      <h3 class="text-xl bg-orange-300 w-full text-center">Department Categories >></h3>
+      {% department_categories_nav %}
+      <button class="view-all border bg-white text-end px-1 hover:underline decoration-sky-500 flex justify-center items-center ">View all 
+        <span class="iconify" data-icon="mdi-arrow-down-drop-circle"></span>
+      </button> 
+    </nav>
+    <!-- Department Navigation Section -->
+  </section>
+  
+  <!-- Featured Products section -->
+  {% if featured_products %}
+  <section class="Featured_products flex-1">
+    <h2 class="text-2xl block my-2 py-3"><span class="border-b border-orange-700 inline-block px-3 py-1"> Top Featured Products</span></h2>
+    <div class="flex flex-wrap mx-4 my-2">
+      {% for product in featured_products %} 
+      <div class="w-full md:w-1/2 lg:w-1/4 p-2">
+        <div class="bg-white rounded-lg shadow-md hover:shadow-xl">
+          <a href="{% url 'store:Product_detail' product.product.id %}" class="block relative h-48 rounded-t-lg overflow-hidden">
+            {% if product.product.image %}
+            <img alt="ecommerce" class="w-full h-full object-cover object-center" src="{{product.product.image.url}}">
+            {% endif %}
+          </a>
+          <div class="p-4">
+            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">{{product.product.category}}</h3>
+            <h2 class="text-gray-900 title-font text-lg font-medium">{{product.product.title}}</h2>
+            <div class="mt-2 flex items-center justify-between">
+              <p class="text-gray-800 font-semibold">{{product.product.price}}</p>
+              <a href="{% url 'userProfile:vendor_detail' product.product.added_by.id%}">
+                <p class="text-gray-500">{{product.product.added_by.get_full_name|default:product.product.added_by.username}}</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>
+
+  <!-- Head section ends here -->
 
     <!-- Product Section -->
     <section class="text-gray-600 body-font ">
       <div class="container px-5 py-2 mx-auto shadow-lg bg-white my-2">
-        <h2 class="text-2xl  my-2 py-3"><span class="border-b border-orange-700 inline-block px-3 py-1"> Top Selling Products</span></h2>
+        <h2 class="text-2xl  my-2 py-3"><span class="border-b border-orange-700 inline-block px-3 py-1"> Latest Products</span></h2>
         <div class="flex flex-wrap bg-gray-100 -m-4">
            
           {%include 'includes/partial_Product.html' %}
         </div>
+
       </div>
     </section>
+
     <!-- Product section End ------------------- -->
     {% endblock %} 
   

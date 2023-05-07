@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from io import BytesIO
 from PIL import Image
 from django.core.files import File
-from django.contrib import messages 
 from userProfile.models import Pasal
+from django.core.validators import MaxValueValidator
 
 
 class Main_Navigation(models.Model):
@@ -36,14 +36,12 @@ class Product(models.Model):
     WAITING_APPROVAL = 'waitingapproval'
     ACTIVE = 'active'
     DELETED = 'deleted'
-
     STATUS_CHOICES = (
         (DRAFT, 'Draft'),
         (WAITING_APPROVAL, 'Waiting approval'),
         (ACTIVE, 'Active'),
         (DELETED, 'Deleted'),
     )
-
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     vendor = models.ForeignKey(Pasal, related_name='products', on_delete=models.CASCADE,null=True)
     added_by=models.ForeignKey(User,related_name='products',on_delete=models.CASCADE)
@@ -86,3 +84,52 @@ class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+
+class Order(models.Model):
+    ORDERED='ordered'
+    PACKAGING='packagig'
+    SHIPPED='shipped]'
+    STATUS_CHOICES=(
+        ( ORDERED,'Ordered'),
+        (  PACKAGING,'Packaging'),
+        ( SHIPPED,'Shipped'),
+    )
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
+    zipcode = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    paid_amount = models.IntegerField(blank=True, null=True)
+    is_paid = models.BooleanField(default=False)
+    payment_intent = models.CharField(max_length=255)
+    created_by = models.ForeignKey(User, related_name='orders', on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status=models.CharField(max_length=20,choices=STATUS_CHOICES,default=ORDERED)
+
+    def __str__(self):
+        return f'{self.created_by} :- at {self.created_at} {self.status}'
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='items', on_delete=models.CASCADE)
+    price = models.IntegerField()
+    quantity = models.IntegerField(default=1)
+    
+    def get_display_price(self):
+        return self.price / 100
+    
+
+class FeaturedProduct(models.Model):
+    product=models.ForeignKey(Product,related_name='featured_product',on_delete=models.CASCADE)
+    def __str__(self):
+        return self.product.title
+    
+
+class ProductReview(models.Model):
+    product=models.ForeignKey(Product,related_name='review',on_delete=models.CASCADE)
+    user=models.ForeignKey(User,related_name='product_review',on_delete=models.CASCADE)
+    rating = models.SmallIntegerField(validators=[MaxValueValidator(5)])
+    comment=models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.user.username, self.product.title ,self.rating

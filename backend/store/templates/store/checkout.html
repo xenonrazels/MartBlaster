@@ -1,0 +1,58 @@
+{% extends 'base.html'%}
+{% load widget_tweaks %}
+{% block main_content %}
+<main class="w-10/12 mx-auto">
+    {% if messages %}
+    <div id="messages">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  {%endif %}
+   
+   {% if  cart %}
+  <h2> Toatal Price : Rs.{{total_price}} </h2>
+
+  <form method="post" class="w-4/5 mx-auto" action="." enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-4">
+        <label for="{{ form.first_name.id_for_label }}" class="block text-gray-700 font-bold mb-2">First Name</label>
+        {{ form.first_name|add_class:"w-full px-3 py-2 rounded-lg bg-gray-200 border-2 border-gray-200 focus:outline-none focus:border-blue-500" }}
+    </div>
+    <div class="mb-4">
+        <label for="{{ form.last_name.id_for_label }}" class="block text-gray-700 font-bold mb-2">Last Name</label>
+        {{ form.last_name|add_class:"w-full px-3 py-2 rounded-lg bg-gray-200 border-2 border-gray-200 focus:outline-none focus:border-blue-500" }}
+    </div>
+    <div class="mb-4">
+        <label for="{{ form.address.id_for_label }}" class="block text-gray-700 font-bold mb-2">Address</label>
+        {{ form.address|add_class:"w-full px-3 py-2 rounded-lg bg-gray-200 border-2 border-gray-200 focus:outline-none focus:border-blue-500" }}
+    </div>
+    <div class="mb-4 flex gap-2 items-center">
+        <div class=>
+        <label for="{{ form.zipcode.id_for_label }}" class="block text-gray-700 font-bold mb-2">Zipcode</label>
+        {{ form.zipcode|add_class:"w-full px-3 py-2 rounded-lg bg-gray-200 border-2 border-gray-200 focus:outline-none focus:border-blue-500" }}
+         </div>
+         <div class=>
+            <label for="{{ form.zipcode.id_for_label }}" class="block text-gray-700 font-bold mb-2">City</label>
+            {{ form.city|add_class:"w-full px-3 py-2 rounded-lg bg-gray-200 border-2 border-gray-200 focus:outline-none focus:border-blue-500" }}
+             </div>
+    </div>
+   
+    <div class="flex justify-between">
+    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Proceed Order</button>
+ 
+</div>
+</form>
+
+
+   {% else %}
+    </div>  
+    <h2 class="text-2xl my-2 font-medium text-gray-500">Your Cart is empty... Shop Now!!</h2>
+{% endif %}
+</main>
+{% endblock%}

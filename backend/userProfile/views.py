@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User 
 from django.contrib.auth.forms import UserCreationForm
 from .models import UserProfile
-from store.models import Product
+from store.models import Product,OrderItem,Order
 from .forms import ProductForm
 from django.contrib import messages
 from django.utils.text import slugify
@@ -33,16 +33,22 @@ def signup(request):
 
 @login_required
 def my_account(request):
-    
+    order=OrderItem.objects.filter(order__created_by=request.user)
+    print(order)
+    context={
+        'orders':order
+    }
 
-    return render(request,'user_profile/my_account.html')
+    return render(request,'user_profile/my_account.html',context)
 
 
 @login_required(login_url='/login/',redirect_field_name='next')
 def my_store(request):
     seller_products= request.user.products.exclude(status=Product.DELETED)
+    products_sold=OrderItem.objects.filter(product__added_by=request.user)
     context={
-        "products":seller_products
+        "products":seller_products,
+        "products_sold":products_sold
     }
     return render(request,'user_profile/my_store.html',context)
 
@@ -89,15 +95,28 @@ def edit_product(request,id):
 
 @login_required
 def delete_product(request, id):
-    print("hello entering page")
+    
     product = Product.objects.filter(added_by=request.user).get(id=id)
-    print(product.status)
+ 
     
     product.status = Product.DELETED 
-    print(product.status)
+   
     product.save()
 
     messages.success(request, 'The product was deleted!')
 
     return redirect('userProfile:my_store')
 
+# def VendorLogin(request):
+#     if request.method=='POST':
+#         form=UserCreationForm(request.POST)
+#         form1=
+#         if form.is_valid():
+#             user=form.save()
+#             login(request,user)
+        
+#             user_profile=UserProfile.objects.create(user=user)
+#             return redirect('store:home')
+#     else:
+#         form=UserCreationForm()
+#     return render(request,'user_profile/signup.html',{'form':form})

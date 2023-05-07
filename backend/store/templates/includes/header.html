@@ -29,7 +29,7 @@
      <button class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">
       <span class="iconify" data-icon="mdi-cart-plus"></span> 
       Cart
-      <span class="" id="cart-count"></span>
+      <span>{{cart.cart_len}}</span>
       </button>
     </a>
       <button class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">
@@ -42,9 +42,10 @@
        
       </button>
       <button class="inline-flex items-center  bg-gray-100 border-0 py-1 px-2 rounded">
-        {% if request.user.is_authenticated %}
+        {% if request.user.is_authenticated  %}
+          {% if request.user.user_profile.is_vendor %}
         <span class="iconify" data-icon="mdi-store"></span> <a href="{%url 'userProfile:my_store' %}" >My Store</a>
-       
+        {% endif%}
 
        {%endif%}
       </button>

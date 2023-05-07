@@ -24,6 +24,9 @@ class Cart(object):
     def __len__(self):
         return sum(item['quantity'] for item in self.cart.values())
     
+    def cart_len(self):
+        return len(self.cart)
+    
     def save(self):
         self.session[settings.CART_SESSION_ID] = self.cart
         self.session.modified = True
@@ -43,6 +46,8 @@ class Cart(object):
         self.save()
     
     def remove(self, product_id):
+        print(product_id)
+       
         if product_id in self.cart:
             del self.cart[product_id]
 
@@ -57,3 +62,4 @@ class Cart(object):
             self.cart[str(p)]['product'] = Product.objects.get(pk=p)
         
         return int(sum(item['product'].price * item['quantity'] for item in self.cart.values()))
+    
